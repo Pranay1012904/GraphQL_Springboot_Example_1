@@ -1,5 +1,11 @@
 type Query {
     firstQuery : String,
     secondQuery : String,
-    fullName(fName:String, lName:String) : String
+    fullName(fName:String, lName:String) : String,
+    jsonFullName(sampleRequest : SampleRequest): String
+}
+
+input SampleRequest{
+    fName:String,
+    lName:String,
 }
