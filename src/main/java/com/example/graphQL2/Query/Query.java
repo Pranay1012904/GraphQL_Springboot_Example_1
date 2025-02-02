@@ -19,4 +19,8 @@ public class Query {
     public String secondQuery(){
         return "My Second Query";
     }
+    @QueryMapping
+    public String fullName(@Argument String fName,@Argument String lName){
+        return fName+" "+lName;
+    }
 }
