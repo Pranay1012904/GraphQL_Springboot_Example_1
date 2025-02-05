@@ -1,11 +1,57 @@
+scalar Long
+
 type Query {
     firstQuery : String,
     secondQuery : String,
     fullName(fName:String, lName:String) : String,
-    jsonFullName(sampleRequest : SampleRequest): String
+    jsonFullName(sampleRequest : SampleRequest): String, #input
+    getStudent(id : Long): StudentResponse #type->return type
 }
 
 input SampleRequest{
-    fName:String,
+    fName:String!, #"!" ensures that the particular field can't be null, however it fails to detect empty fields
     lName:String,
 }
+
+type StudentResponse{
+      id: Long
+      fName:String
+      lName:String
+      email:String
+      city:String
+      state:String
+    listOfSubjects:[SubjectResponse]
+}
+
+type SubjectResponse{
+    id:Long,
+    subjectName:String,
+    marksObtained:Int
+}
+
+#I rebuilt the project with Spring Boot 3 and encountered the same problem. In case anyone needs this information, I found this: https://github.com/graphql-java/graphql-java-extended-scalars
+#In short:
+#<dependency>
+#<groupId>com.graphql-java</groupId>
+#<artifactId>graphql-java-extended-scalars</artifactId>
+#<version>22.0</version>
+#</dependency>
+#If you are using Spring for GraphQL, register the scalar with RuntimeWiringConfigurer
+#@Configuration
+#public class ScalarConfig {
+#@Bean
+#public RuntimeWiringConfigurer runtimeWiringConfigurer() {
+#return wiringBuilder -> wiringBuilder
+#.scalar(graphql.scalars.ExtendedScalars.GraphQLLong)
+#.scalar(ExtendedScalars.GraphQLBigDecimal);
+#}
+#}
+#Use the scalar in your schema
+#scalar Long
+#scalar BigDecimal
+#type SubjectResponse{
+#id: Long
+#subjectName: String
+#marksObtained: BigDecimal
+#}
+# Schema for Spring JPA Student Entity
